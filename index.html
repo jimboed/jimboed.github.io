@@ -1,1 +1,697 @@
-Hello World
+<!DOCTYPE html>
+<html>
+ 
+<meta charset="utf-8">
+ 
+<script src="https://d3js.org/d3.v4.js"></script>
+
+ 
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+ 
+ 
+<style>
+#separator{outline: 1px solid black; background: orange; }
+
+.dots {
+  stroke-width: 1px;
+  stroke: black;
+  opacity: .8
+}
+.dots:hover {
+  stroke: black;
+}
+.buttons {
+	
+	background-color: steelblue;
+	margin:10px;
+	float:left;
+ 
+	background-color: steelblue;
+	margin:5px;
+	
+       
+}
+
+ 
+
+  
+ 
+
+</style>
+
+
+<body>
+	
+	<p>
+	In searching for a data set to do this project, I found one on cereals. One of the feilds was labeled as "rating".  
+	<br>
+	"Rated by what?",  I thought. If this is rated by taste, then obviously the one with the higest sugar or carbs will win, right? 
+	<br>
+	So, I brought the data into a chart to plot each of the fields against rating, and it turns out I was wrong.  
+	<br>
+	The higest rating corresponded to the higest values with healthier attributtes: low carbs, low fat, high fiber. ect.</p>
+
+
+	<p>Heres how to navigate this visulaization:</p>
+	<p>The size of the dot is the RATING. <br>The bigger the dot, the bigger the rating, and this does not change. </p>
+	<p>The blue tabs at the top act as "slides". <br>The slide selects combinations to map  to the X and Y axes. </p>
+	<p>The radio buttons at the bottom act as "parameters".<br>They become the values used in the X and Y  axes.
+		<br> -- As you select values for the X axis, a list of all the different possible values are built on the right. 
+		<br> -- You can hover over those values to hilight where dots with those values are in the chart. 
+		<br> -- You can hover over dots in the chart to show the name of the cereal that dot represents.
+	</p>
+
+
+
+	<script>
+
+const annotations = [
+									{
+										note: {
+												title: "hover over these SIDE dots:",
+												label: "to isolate all dots with that value in the chart",
+												
+											},
+										x: 670,
+										y: 10,
+										
+									},
+									{
+										note: {
+											title: "hover over these CHART dots:",
+												label: "hover over these dots to show the cereal name",
+												
+											},
+										x: 170,
+										y: 10,
+										
+									}
+								];
+
+const slide1Annotations = [
+									{
+										note: {
+												title: "slide1, calries:",
+												label: "the highest rated are  at the bottom!",
+												
+											},
+										x: 10,
+										y: 10,
+										
+									},
+									 
+								];
+
+
+const slide2Annotations = [
+									{
+										note: {
+												title: "slide2, sugars:",
+												label: "the highest  rated are ALSO at the bottom!",
+												
+											},
+										x: 10,
+										y: 10,
+										
+									},
+									 
+								];
+
+
+const slide3Annotations = [
+									{
+										note: {
+												title: "slide3, carbos:",
+												label: "ok, so the higest rateds  are  moving up",
+												
+											},
+										x: 10,
+										y: 10,
+										
+									},
+									 
+								];
+const slide4Annotations = [
+									{
+										note: {
+												title: "slide4, protien:",
+												label: "the highest  rated not quite at the top, but still moving  up.",
+												
+											},
+										x: 10,
+										y: 10,
+										
+									},
+									 
+								];
+
+const slide5Annotations = [
+									{
+										note: {
+												title: "slide5, unhealthy mixed;  ",
+												label: "the highest  rated are  at the bottom!",
+												
+											},
+										x: 10,
+										y: 10,
+										
+									},
+									 
+								];
+const slide6Annotations = [
+									{
+										note: {
+												title: "slide6, healthier mixed: ",
+												label: "the highest  rated are moving up!",
+												
+											},
+										x: 10,
+										y: 10,
+										
+									},
+									 
+								];
+
+const slide7Annotations = [
+									{
+										note: {
+												title: "slide7, YOUR TURN: ",
+												label: "now you  try to find the best combination that puts the largest dots the  top right corner. that will be the variables that  most contribute to the higest ratings. ",
+												
+											},
+										x: 10,
+										y: 10,
+										
+									},
+									 
+								];
+
+ 
+
+
+var tabSelected = "unhealthy";
+var XRadioSelected = "calories"
+var YRadioSelected = "calories"
+ 
+
+
+
+var margin = {top: 60, right: 150, bottom: 60, left: 30},
+    width = 800 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+
+
+var  buttons= d3.select('body')
+			  				.selectAll('buttons')
+
+						
+							.data(['calories','sugars','carbo','protein', 'unhealthy', 'healthy' , 'your turn!'])
+							.enter()
+							.append('div')
+							.attr('class', "buttons")
+							.attr('id', function(data){return data;})
+							.text(function(data){console.log(data); return data; });
+
+							
+							buttons.on("click", function(element){
+																	buttons.style("background-color", "steelblue");
+
+																	d3.select(this).style("background-color", "orange");
+																	console.log("element "+ typeof element);
+																	console.log("current tab "+tabSelected);
+																	console.log("..");
+																	 
+
+																	
+																	if(element == tabSelected){
+																		console.log("do nothing.");
+
+																	}else{
+																		wipeSVG()
+																		if (element == "calories" ){ 
+
+																			one("calories", "calories") 
+
+																			tabSelected = element
+
+																			const makeAnnotations = d3.annotation().annotations(slide1Annotations);
+																			d3.selectAll("svg").append("g").call(makeAnnotations);
+
+
+																		}else if (element == "sugars" ){ 
+
+																			one("sugars", "sugars") 
+
+																			tabSelected = element
+																			const makeAnnotations = d3.annotation().annotations(slide2Annotations);
+																			d3.selectAll("svg").append("g").call(makeAnnotations);
+
+
+																		}else if (element == "carbo" ){ 
+
+																			one("carbo", "carbo") 
+																			
+
+																			tabSelected = element
+
+
+																			const makeAnnotations = d3.annotation().annotations(slide3Annotations);
+																			d3.selectAll("svg").append("g").call(makeAnnotations);
+
+
+																		}else if (element == "protein" ){ 
+
+																			one("protein", "protein") 
+
+																			tabSelected = element
+
+
+																			const makeAnnotations = d3.annotation().annotations(slide4Annotations);
+																			d3.selectAll("svg").append("g").call(makeAnnotations);
+
+
+																			
+																		}else if (element == "unhealthy" ){ 
+
+																			one("sugars", "calories") 
+																			
+
+																			tabSelected = element
+
+
+																			const makeAnnotations = d3.annotation().annotations(slide5Annotations);
+																			d3.selectAll("svg").append("g").call(makeAnnotations);
+
+
+																			
+																		}else if (element == "healthy" ){ 
+
+																			one("fiber", "protein") 
+
+																			tabSelected = element
+
+
+																			const makeAnnotations = d3.annotation().annotations(slide6Annotations);
+																			d3.selectAll("svg").append("g").call(makeAnnotations);
+
+
+
+																		}else if (element == "your turn!" ){ 
+
+																			one("calories", "calories") 
+
+																			tabSelected = element
+
+
+																			const makeAnnotations = d3.annotation().annotations(slide7Annotations);
+																			d3.selectAll("svg").append("g").call(makeAnnotations);
+
+
+
+																		}
+
+																	}
+
+																	
+																}
+
+											 
+										);
+
+
+d3.select("body").append("div").attr("id", "_dataVisulaizationCanvas");
+
+ 
+ 
+d3.select("#_dataVisulaizationCanvas").append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+
+one("calories", "calories")
+
+function wipeSVG(){
+
+	d3.selectAll("svg > *").remove();
+	d3.selectAll("#sideChart").remove();
+
+	d3.select("svg").attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+		.attr("transform",
+			"translate(" + margin.left + "," + margin.top + ")");
+
+
+}
+
+
+function one(xAxis, yAxis){
+	
+	// append the svg object to the body of the page
+	const makeAnnotations = d3.annotation().annotations(annotations);
+
+
+
+	d3.selectAll("svg").append("g").call(makeAnnotations);
+
+	//Read the data
+	d3.csv("https://raw.githubusercontent.com/jimboed/jimboed.github.io/master/cereal.csv", function(data) {
+	var XmaxValue = 0;
+	var XminValue = 10000000;
+	
+	var XuniqueValues = [];
+	data.forEach(function(element) {
+  		console.log("........"+element[xAxis]);
+		if ( Number(element[xAxis]) < XminValue){ console.log(element[xAxis]+"<"+ XminValue);  XminValue  =  Number(element[xAxis]); }
+		if ( Number(element[xAxis]) > XmaxValue){ console.log(element[xAxis]+">"+ XmaxValue); XmaxValue  =  Number(element[xAxis]);   }
+		if(!XuniqueValues.includes(element[xAxis])){XuniqueValues.push(element[xAxis])}
+	});
+
+	
+	console.log("max: "+ XmaxValue)
+	console.log("min: "+ XminValue)
+	console.log(XuniqueValues)
+
+
+
+
+
+
+
+
+	var YmaxValue = 0;
+	var YminValue = 10000000;
+	
+	var YuniqueValues = [];
+	data.forEach(function(element) {
+  		console.log("........"+element[yAxis]);
+		if ( Number(element[yAxis]) < YminValue){ console.log(element[yAxis]+"<"+ YminValue);  YminValue  =  Number(element[yAxis]); }
+		if ( Number(element[yAxis]) > YmaxValue){ console.log(element[yAxis]+">"+ YmaxValue); YmaxValue  =  Number(element[yAxis]);   }
+		if(!XuniqueValues.includes(element[xAxis])){XuniqueValues.push(element[xAxis])}
+	});
+	console.log("max: "+ XmaxValue)
+	console.log("min: "+ XminValue)
+	console.log(XuniqueValues)
+
+
+
+
+
+
+
+ 
+
+ 
+	console.log(xAxis)
+
+
+	var svg = d3.select("svg")
+	
+	 
+	var x = d3.scaleLinear().domain([XminValue, XmaxValue]).range([ 10, width ]);
+	svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).ticks(3));
+	svg.append("text").attr("text-anchor", "end").attr("x", width).attr("y", height+50 ).text(xAxis);
+
+	
+	var y = d3.scaleLinear().domain([YminValue, YmaxValue]).range([ height, 0]);
+	svg.append("g").call(d3.axisLeft(y));
+	svg.append("text").attr("text-anchor", "end").attr("x", 0).attr("y", -20 ).text("rating").attr("text-anchor", "start")
+
+	 
+	var z = d3.scaleSqrt().domain([20, 10000]).range([ 1, 5]);
+
+ 
+	var _color = d3.scaleOrdinal().domain(XuniqueValues).range(d3.schemeDark2);
+
+ 
+ 
+	var sideChart = d3.select("#_dataVisulaizationCanvas")
+		.append("div")
+		.style("opacity", 0)
+		.attr("class", "sideChart")
+		.style("background-color", "orange")
+		.style("border-radius", "5px")
+		.style("padding", "10px")
+		.style("color", "black")
+		.attr("id", "sideChart")
+
+ 
+	var showsideChart = function(data) {
+		sideChart
+		.transition()
+		.duration(200)
+		sideChart
+		.style("opacity", 1)
+		.html("name: " + data.name)
+		.style("left", (d3.mouse(this)[0]+30) + "px")
+		.style("top", (d3.mouse(this)[1]+30) + "px")
+	}
+	var movesideChart = function(data) { sideChart.style("left", (d3.mouse(this)[0]+30) + "px").style("top", (d3.mouse(this)[1]+30) + "px") }
+	var hidesideChart = function(data) { sideChart.transition().duration(200).style("opacity", 0) }
+
+ 
+
+	 
+	var highlightDots = function(data){
+										d3.selectAll(".dots").style("opacity", .2)
+										console.log(".>>>>>>>>>>"+data)
+										d3.selectAll(".xAxis"+data).style("opacity", 1)
+									}
+ 
+	var UNhighlightDots = function(data){
+										d3.selectAll(".dots").style("opacity", 1)
+									}
+
+  
+	svg.append('g')
+		.selectAll("dot")
+		.data(data)
+		.enter()
+		.append("circle")
+		.attr("class", function(data) { return "dots " + "xAxis"+data[xAxis] })
+		.attr("cx", function (data) {  return x(data[xAxis]);  } )
+		.attr("cy", function (data) { return y(data[yAxis]); } )
+		.attr("r", function (data) { return z((data.rating * data.rating* data.rating)/3); } ) 
+		.style("fill", function (data) { return _color(data[xAxis]); } )
+ 
+		.on("mouseover", showsideChart )
+		.on("mousemove", movesideChart )
+		.on("mouseleave", hidesideChart )
+ 
+
+ 
+		var size = 20
+		var allgroups = XuniqueValues
+
+		svg.selectAll("_labelDots")
+			.data(allgroups)
+			.enter()
+			.append("circle")
+			.attr("cx", 690)
+			.attr("cy", function(data,index){ return 100 + index * ( size + 5)})  
+			.attr("r", 7)
+			.style("fill", function(data){ return _color(data)})
+			.on("mouseover", highlightDots)
+			.on("mouseleave", UNhighlightDots)
+
+ 
+		svg.selectAll("_labels")
+			.data(allgroups)
+			.enter()
+			.append("text")
+			.attr("x", 690 + size*.8)
+			.attr("y", function(data,index){ return 100+ index * (size + 5) + (size/2)}) 
+			.style("fill", function(data){ return _color(data)})
+			.text(function(data){ return data})
+			.attr("text-anchor", "left")
+			.style("alignment-baseline", "middle")
+			.on("mouseover", highlightDots)
+			.on("mouseleave", UNhighlightDots)
+
+
+
+	})
+
+
+
+
+
+}
+
+
+var axisSelections = [];
+
+var xaxisRadios  = d3.select("body").append("div").attr("float", "left").text("X AXIS SELECTION").attr("id",  "separator")
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","calories").attr("id","xaxisID")
+d3.select("body").append("label").text("calories")
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","protein").attr("id","xaxisID")
+d3.select("body").append("label").text("protein")
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","fat").attr("id","xaxisID")
+d3.select("body").append("label").text("fat")
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","fiber").attr("id","xaxisID")
+d3.select("body").append("label").text("fiber")
+
+ 
+
+
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","carbo").attr("id","xaxisID")
+d3.select("body").append("label").text("carbo")
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","sugars").attr("id","xaxisID")
+d3.select("body").append("label").text("sugars")
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","potass").attr("id","xaxisID")
+d3.select("body").append("label").text("potass")
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","vitamins").attr("id","xaxisID")
+d3.select("body").append("label").text("vitamins")
+
+
+
+
+
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","shelf").attr("id","xaxisID")
+d3.select("body").append("label").text("shelf")
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","weight").attr("id","xaxisID")
+d3.select("body").append("label").text("weight")
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","cups").attr("id","xaxisID")
+d3.select("body").append("label").text("cups")
+
+d3.select("body").append("input").attr("type","radio").attr("name","xaxis").attr("value","rating").attr("id","xaxisID")
+d3.select("body").append("label").text("rating")
+
+
+d3.selectAll("#xaxisID").on("change", function(d){
+												console.log('button changed to ' + this.value);
+
+												 
+												 
+												wipeSVG()
+												one( this.value , YRadioSelected)
+
+												XRadioSelected = this.value
+										
+												console.log(axisSelections)
+											 
+											}
+						);
+
+var yaxisRadios  = d3.select("body").append("div").attr("float", "left").text("Y AXIS SELECTION").attr("id",  "separator")
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","calories").attr("id","yaxisID")
+d3.select("body").append("label").text("calories")
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","protein").attr("id","yaxisID")
+d3.select("body").append("label").text("protein")
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","fat").attr("id","yaxisID")
+d3.select("body").append("label").text("fat")
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","fiber").attr("id","yaxisID")
+d3.select("body").append("label").text("fiber")
+
+ 
+
+
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","carbo").attr("id","yaxisID")
+d3.select("body").append("label").text("carbo")
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","sugars").attr("id","yaxisID")
+d3.select("body").append("label").text("sugars")
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","potass").attr("id","yaxisID")
+d3.select("body").append("label").text("potass")
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","vitamins").attr("id","yaxisID")
+d3.select("body").append("label").text("vitamins")
+
+
+
+
+
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","shelf").attr("id","yaxisID")
+d3.select("body").append("label").text("shelf")
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","weight").attr("id","yaxisID")
+d3.select("body").append("label").text("weight")
+
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","cups").attr("id","yaxisID")
+d3.select("body").append("label").text("cups")
+
+d3.select("body").append("input").attr("type","radio").attr("name","yaxis").attr("value","rating").attr("id","yaxisID")
+d3.select("body").append("label").text("rating")
+
+
+d3.selectAll("#yaxisID").on("change", function(d){
+												console.log('button changed to ' + this.value);
+
+												 
+												 
+												wipeSVG()
+												one( XRadioSelected, this.value)
+												YRadioSelected = this.value
+										
+												console.log(axisSelections)
+											 
+											}
+						);
+
+
+
+
+
+
+
+</script>
+
+   
+
+<p>
+<br><br><br><br><br><br><br>
+
+	The data for the cereals was found at:
+	<br>
+	https://perso.telecom-paristech.fr/eagan/class/igr204/data/cereal.csv
+	<br>
+	<br>
+	The overall structure  for the chart follows the exmaple from the code available in  the assignemnts for  this course, on the  Coursera site. 
+	<br>
+	The hovering functionality follows the exmaple from the code available in the tutorial available at: 
+	<br>
+	https://www.d3-graph-gallery.com/graph/bubble_template.html
+	<br>
+	<br>
+	The annotation functionality follows the exmaple from the code available in the tutorial available at: 
+	<br>
+	https://www.d3-graph-gallery.com/graph/custom_annotation.html
+	<br>
+
+</p>
+</body>
+
+</html>
+ 
