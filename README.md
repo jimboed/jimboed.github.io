@@ -9,3 +9,4 @@ here is what im intending:
 80 cereals with nutrition info, and a rating.
 if you  hover over a dot, it shows the ceral. 
 
+https://jimboed.github.io/
